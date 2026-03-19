@@ -116,12 +116,14 @@ namespace CitizenApi.Controllers
 
         private async Task<string> GetRandomAssetAsync()
         {
+            _logger.LogWarning("=== ENTRO A GetRandomAssetAsync ===");
+
             try
             {
                 var client = _httpClientFactory.CreateClient();
                 var url = _configuration["ExternalApi:BaseUrl"];
 
-                _logger.LogInformation("External API request executed");
+                _logger.LogWarning("=== External API request executed ===");
 
                 var response = await client.GetAsync(url);
 
@@ -144,7 +146,6 @@ namespace CitizenApi.Controllers
                 return "Unknown Asset";
             }
         }
-
         private class ApiObject
         {
             public string? Name { get; set; }
