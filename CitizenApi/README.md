@@ -1,4 +1,4 @@
-# 🚀 CitizenApi - Practice02
+﻿# 🚀 CitizenApi - Practice02
 
 ## 📌 Overview
 CitizenApi is a RESTful Web API developed using ASP.NET Core as part of Practice02.

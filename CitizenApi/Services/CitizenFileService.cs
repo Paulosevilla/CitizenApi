@@ -1,14 +1,17 @@
 ﻿using CitizenApi.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CitizenApi.Services
 {
     public class CitizenFileService
     {
         private readonly string _filePath;
+        private readonly ILogger<CitizenFileService> _logger;
 
-        public CitizenFileService(IConfiguration configuration)
+        public CitizenFileService(IConfiguration configuration, ILogger<CitizenFileService> logger)
         {
             _filePath = configuration["CitizenFilePath"] ?? "Data/citizens.csv";
+            _logger = logger;
 
             var directory = Path.GetDirectoryName(_filePath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -22,32 +25,41 @@ namespace CitizenApi.Services
             }
         }
 
+
         public List<Citizen> GetAll()
         {
-            var citizens = new List<Citizen>();
-            var lines = File.ReadAllLines(_filePath);
-
-            foreach (var line in lines)
+            try
             {
-                if (string.IsNullOrWhiteSpace(line))
-                    continue;
+                var citizens = new List<Citizen>();
+                var lines = File.ReadAllLines(_filePath);
 
-                var values = line.Split(',');
-
-                if (values.Length < 5)
-                    continue;
-
-                citizens.Add(new Citizen
+                foreach (var line in lines)
                 {
-                    FirstName = values[0],
-                    LastName = values[1],
-                    CI = values[2],
-                    BloodGroup = values[3],
-                    PersonalAsset = values[4]
-                });
-            }
+                    if (string.IsNullOrWhiteSpace(line))
+                        continue;
 
-            return citizens;
+                    var values = line.Split(',');
+
+                    if (values.Length < 5)
+                        continue;
+
+                    citizens.Add(new Citizen
+                    {
+                        FirstName = values[0],
+                        LastName = values[1],
+                        CI = values[2],
+                        BloodGroup = values[3],
+                        PersonalAsset = values[4]
+                    });
+                }
+
+                return citizens;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error reading citizens file");
+                return new List<Citizen>();
+            }
         }
 
         public Citizen? GetByCi(string ci)
@@ -57,10 +69,17 @@ namespace CitizenApi.Services
 
         public void SaveAll(List<Citizen> citizens)
         {
-            var lines = citizens.Select(c =>
-                string.Join(",", c.FirstName, c.LastName, c.CI, c.BloodGroup, c.PersonalAsset));
+            try
+            {
+                var lines = citizens.Select(c =>
+                    string.Join(",", c.FirstName, c.LastName, c.CI, c.BloodGroup, c.PersonalAsset));
 
-            File.WriteAllLines(_filePath, lines);
+                File.WriteAllLines(_filePath, lines);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error writing citizens file");
+            }
         }
     }
 }
