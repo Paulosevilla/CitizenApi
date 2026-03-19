@@ -122,7 +122,4 @@ The application consumes an external API using `HttpClient`:
 Developed as part of Practice02.
 
 ---
-
-## 📄 License
-
-Educational purposes only.
+Updated on main
