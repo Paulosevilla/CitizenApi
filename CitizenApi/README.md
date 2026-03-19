@@ -9,7 +9,7 @@ The application manages citizen data and integrates external APIs to enrich info
 
 ## 🧱 Architecture
 
-This project follows a clean and organized structure:
+This project uses a structured organization with controllers, DTOs, models, services, and CSV-based data storage.
 
 - **Controllers** → Handle HTTP requests
 - **Models** → Represent data entities
